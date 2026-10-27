@@ -1,0 +1,25 @@
+# Datos (se descargan con `make data`; no se versionan)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Artefactos entrenados (usar Git LFS si se requiere versionarlos)
+models/*
+!models/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store

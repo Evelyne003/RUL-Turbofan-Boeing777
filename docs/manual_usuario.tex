@@ -1,0 +1,1176 @@
+\documentclass[letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+% Fuente monoespaciada sin ligaduras: evita que "--opcion" se imprima como una sola raya
+\renewcommand{\ttdefault}{pcr}
+\usepackage{microtype}
+\DisableLigatures[-]{encoding = *, family = tt*}
+\usepackage[top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{diagbox}
+\usepackage{pifont}
+\usepackage{makecell}
+\usepackage{listings}
+
+% Cargar TikZ y librerías una sola vez
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc, shadows}
+
+% Paleta de colores (misma del protocolo)
+\usepackage[table]{xcolor}
+\definecolor{colorDatos}{RGB}{173, 216, 230}
+\definecolor{colorModulos}{RGB}{144, 238, 144}
+\definecolor{colorProcesos}{RGB}{255, 239, 178}
+\definecolor{colorTexto}{RGB}{30, 30, 30}
+\definecolor{colorPropuesta}{RGB}{230, 240, 255}
+\definecolor{colorOtros}{RGB}{245, 245, 245}
+\definecolor{semNormal}{RGB}{200, 230, 201}
+\definecolor{semPrecaucion}{RGB}{255, 243, 196}
+\definecolor{semCritico}{RGB}{255, 205, 210}
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+\addto\captionsspanish{\renewcommand{\listtablename}{Índice de tablas}}
+
+% ===== Utilidades de redacción =====
+% Comandos de terminal (admite espacios y guiones; los espacios permiten salto de línea)
+\newcommand{\cmd}[1]{\texttt{\detokenize{#1}}}
+% Rutas y nombres de archivo (admite guion bajo y salto de línea en las diagonales)
+\newcommand{\ruta}[1]{\path{#1}}
+\emergencystretch=3em
+
+% Bloques de código / terminal
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{colorOtros},
+  frame=single,
+  rulecolor=\color{gray!60},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  xleftmargin=4pt, xrightmargin=4pt,
+  aboveskip=6pt, belowskip=6pt
+}
+
+% Estilo de encabezados (equivalente al del protocolo)
+\titleformat{\section}{\fontsize{12}{14}\bfseries\selectfont}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\fontsize{11}{13}\bfseries\selectfont}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black, citecolor=blue!50!black}
+
+% Encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\fontsize{8}{10}\selectfont\itshape Manual técnico y de usuario · TT No. 2027-A190}
+\fancyhead[R]{\fontsize{8}{10}\selectfont\itshape ESCOM-IPN}
+\fancyfoot[C]{\fontsize{9}{11}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+% Ayudas para tablas con el estilo del protocolo
+\newcommand{\encabezadotabla}{\rowcolor{red!20}}
+\newcommand{\filatabla}{\rowcolor{colorOtros}}
+
+% ============================================================
+\begin{document}
+
+\begin{center}
+    {\fontsize{12}{15}\bfseries\selectfont
+    Manual técnico y de usuario del prototipo basado en la aplicación de
+    aprendizaje profundo para estimar el tiempo de vida útil restante en motores
+    turbofan de aeronave comercial Boeing~777}\\[6pt]
+    {\fontsize{12}{15}\bfseries\itshape\selectfont
+    Trabajo Terminal No.~2027-A190}\\[6pt]
+    {\fontsize{10}{13}\itshape\selectfont
+    Alumnos: *Rojas Vasquez Evelyne$^{1}$, Onofre Rosales Rodrigo$^{2}$ \\
+    Directores: Morales Guitron Sandra Luz$^{1}$, López Ruiz Gabriela de Jesús$^{2}$ \\
+    *e-mail: erojasv2200@alumno.ipn.mx}
+\end{center}
+
+\vspace{4pt}
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\bfseries}l|X|}
+    \hline
+    \encabezadotabla \multicolumn{2}{|c|}{\textbf{Ficha del documento}} \\
+    \hline
+    \filatabla Documento & Manual técnico y de usuario (entregable de la fase de Documentación del cronograma) \\
+    \hline
+    \filatabla Versión & 1.0 — octubre de 2026 \\
+    \hline
+    \filatabla Ubicación en el repositorio & \ruta{docs/manual_usuario/manual_usuario.tex} (fuente) y \ruta{docs/manual_usuario/manual_usuario.pdf} (compilado) \\
+    \hline
+    \filatabla Corresponde a & Código del repositorio versión 1.0.0 (\ruta{src/__init__.py}) \\
+    \hline
+    \filatabla Dirigido a & Operadores del departamento de mantenimiento aeronáutico (uso del tablero) y personal técnico (instalación, entrenamiento y evaluación) \\
+    \hline
+\end{tabularx}
+\end{table}
+
+\newpage
+\tableofcontents
+\newpage
+% ============================================================
+\section{Introducción}
+
+Este documento explica cómo instalar, ejecutar y utilizar el \textbf{prototipo}
+de sistema de mantenimiento predictivo desarrollado en el Trabajo Terminal
+No.~2027-A190. El prototipo \textbf{aplica} una arquitectura de red neuronal
+recurrente LSTM reportada en la literatura~\cite{zheng2017lstm} para estimar la
+vida útil restante (\textit{Remaining Useful Life}, RUL) de motores turbofan a
+partir de lecturas multivariadas de sensores, y presenta los resultados en un
+tablero de visualización con un indicador de alerta de falla.
+
+Siguiendo la terminología del protocolo, el término \textbf{prototipo} designa
+el sistema integrado (módulos de software, flujo de datos y tablero), mientras
+que el término \textbf{modelo} designa la red LSTM que funciona como núcleo de
+inferencia.
+
+\subsection{Alcance y advertencia sobre los datos}
+
+El caso de aplicación es el motor turbofan de aeronaves comerciales como el
+Boeing~777. Sin embargo, el prototipo se entrena y valida con los conjuntos de
+datos públicos C-MAPSS de la NASA~\cite{saxena2008damage}, que son resultado de
+una \textbf{simulación} de un motor turbofan genérico~\cite{frederick2007cmapss}.
+Por lo tanto:
+
+\begin{itemize}
+    \item Los datos \textbf{no} son telemetría real de motores Boeing~777.
+    \item Los canales disponibles son temperaturas, presiones, velocidades,
+          razones y flujos (Tabla~\ref{tab:sensores}); \textbf{no} existe un canal
+          de vibración.
+    \item Los resultados son de carácter académico y \textbf{no} sustituyen los
+          procedimientos de mantenimiento ni de aeronavegabilidad vigentes.
+\end{itemize}
+
+\subsection{Qué encontrará en este manual}
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Guía de lectura según el perfil del usuario.}
+\label{tab:guia}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.3cm}|X|>{\raggedright\arraybackslash}p{3cm}|}
+    \hline
+    \encabezadotabla \textbf{Perfil} & \textbf{Qué necesita hacer} & \textbf{Secciones} \\
+    \hline
+    \filatabla Operador de mantenimiento & Consultar el estado de un motor o de la flota e interpretar las alertas & \ref{sec:tablero}, \ref{sec:limitaciones} \\
+    \hline
+    \filatabla Personal técnico / desarrollador & Instalar, obtener los datos, entrenar, evaluar y mantener el sistema & \ref{sec:requisitos}--\ref{sec:entrenamiento}, \ref{sec:estructura}, \ref{sec:problemas} \\
+    \hline
+    \filatabla Evaluador (sinodal) & Reproducir los resultados y verificar la metodología & \ref{sec:descripcion}, \ref{sec:entrenamiento}, \ref{sec:estructura} \\
+    \hline
+\end{tabularx}
+\end{table}
+
+% ============================================================
+\section{Descripción general del sistema}
+\label{sec:descripcion}
+
+El prototipo se organiza en cuatro módulos que operan en secuencia, tal como se
+describe en el protocolo. La Figura~\ref{fig:arquitectura} muestra el flujo
+completo: a la izquierda, la \textbf{entrada} (datos crudos de sensores del
+motor); a la derecha, la \textbf{salida} (valor estimado de RUL en ciclos de
+operación y alerta visual en el tablero).
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    io/.style={
+      rectangle, rounded corners=3pt,
+      minimum width=3.6cm, minimum height=1.5cm,
+      text width=3.6cm, align=center,
+      draw=black!70, fill=gray!15,
+      font=\fontsize{9}{11}\selectfont\bfseries
+    },
+    modulo/.style={
+      rectangle, rounded corners=5pt,
+      minimum width=3.6cm, minimum height=2.0cm,
+      text width=3.6cm, align=center,
+      draw=gray!60, fill=#1,
+      font=\fontsize{9}{11}\selectfont,
+      drop shadow={shadow xshift=1.5pt, shadow yshift=-1.5pt, fill=gray!30}
+    },
+    etiqueta/.style={
+      font=\fontsize{7.5}{9}\selectfont\itshape,
+      text width=2.1cm, align=center
+    },
+    flecha/.style={-Stealth, thick, draw=gray!60},
+    caja/.style={
+      rectangle, rounded corners=7pt,
+      draw=gray!40, dashed, thick,
+      fill=gray!4,
+      inner xsep=10pt, inner ysep=12pt
+    }
+  ]
+  % Fila 1
+  \node[io] (entrada) at (0,0) {%
+    \textbf{ENTRADA}\\[3pt]
+    Lecturas de sensores\\del motor turbofan\\(dataset C-MAPSS)
+  };
+  \node[modulo=blue!12] (adq) at (5.8,0) {%
+    \textbf{Módulo 1}\\[4pt]
+    Adquisición y\\limpieza de datos\\[3pt]
+    {\fontsize{7}{8}\selectfont\itshape(eliminación de señales\\constantes, normalización)}
+  };
+  \node[modulo=green!14] (ventanas) at (11.6,0) {%
+    \textbf{Módulo 2}\\[4pt]
+    Construcción de\\ventanas temporales\\[3pt]
+    {\fontsize{7}{8}\selectfont\itshape(segmentación de series\\de tiempo por motor)}
+  };
+  % Fila 2
+  \node[modulo=orange!18] (lstm) at (0,-5.2) {%
+    \textbf{Módulo 3}\\[4pt]
+    Modelo de\\estimación LSTM\\[3pt]
+    {\fontsize{7}{8}\selectfont\itshape(red neuronal recurrente\\para predecir el RUL)}
+  };
+  \node[modulo=red!10] (salida_mod) at (5.8,-5.2) {%
+    \textbf{Módulo 4}\\[4pt]
+    Generación de\\resultados y alertas\\[3pt]
+    {\fontsize{7}{8}\selectfont\itshape(cálculo de métricas\\RMSE, MAE y Score)}
+  };
+  \node[io] (salida) at (11.6,-5.2) {%
+    \textbf{SALIDA}\\[3pt]
+    Valor estimado de\\vida útil restante\\(RUL en ciclos)
+  };
+  % Tablero
+  \node[io, fill=purple!12] (dash) at (11.6,-9.2) {%
+    Tablero de visualización\\[2pt]
+    {\fontsize{7.5}{9}\selectfont\itshape(gráficas + indicador\\de alerta de falla)}
+  };
+
+  % Flechas fila 1
+  \draw[flecha] (entrada) -- (adq)
+      node[etiqueta, midway, above=2pt]{datos crudos\\de sensores};
+  \draw[flecha] (adq) -- (ventanas)
+      node[etiqueta, midway, above=2pt]{series limpias\\y normalizadas};
+  % Salto de fila: Módulo 2 -> Módulo 3
+  \draw[flecha] (ventanas.south) -- ++(0,-1.5) -| (lstm.north);
+  \node[etiqueta, text width=4cm, fill=white, inner sep=1pt] at (5.8,-2.2) {ventanas de tamaño fijo};
+  % Flechas fila 2
+  \draw[flecha] (lstm) -- (salida_mod)
+      node[etiqueta, midway, above=2pt]{RUL estimado\\por motor};
+  \draw[flecha] (salida_mod) -- (salida)
+      node[etiqueta, midway, above=2pt]{valor numérico\\de RUL};
+  \draw[flecha] (salida.south) -- (dash.north)
+      node[midway, right=3pt, font=\fontsize{7.5}{9}\selectfont\itshape]{visualización};
+  % Retroalimentación
+  \draw[flecha, dashed, draw=gray!55] (salida_mod.south) -- ++(0,-1.0) -| (lstm.south);
+  \node[font=\fontsize{7}{8.5}\selectfont\itshape, align=center, anchor=north] at (2.9,-7.25)
+      {retroalimentación de métricas\\(ajuste de hiperparámetros)};
+
+  \begin{pgfonlayer}{background}
+    \node[caja, fit=(adq)(ventanas),
+          label={[font=\fontsize{8.5}{10}\selectfont\bfseries,
+                  text=blue!50!black]above:Capa de preprocesamiento}] {};
+    \node[caja, fit=(lstm)(salida_mod),
+          label={[font=\fontsize{8.5}{10}\selectfont\bfseries,
+                  text=orange!60!black]above:Capa de inferencia y evaluación}] {};
+  \end{pgfonlayer}
+\end{tikzpicture}%
+}
+\caption{Arquitectura modular del sistema de estimación de vida útil restante
+(RUL). La \textbf{entrada} son los datos de sensores del motor; la
+\textbf{salida} es el número de ciclos de operación restantes estimados por el
+modelo. El flujo se lee de izquierda a derecha en cada fila y continúa en la
+fila inferior.}
+\label{fig:arquitectura}
+\end{figure}
+
+La Tabla~\ref{tab:modulos} indica en qué archivos del repositorio se implementa
+cada módulo.
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Correspondencia entre los módulos del protocolo y el código fuente.}
+\label{tab:modulos}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.6cm}|>{\raggedright\arraybackslash}p{4.6cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Módulo} & \textbf{Archivos} & \textbf{Responsabilidad} \\
+    \hline
+    \filatabla 1. Adquisición y limpieza & \ruta{src/ingestion.py}, \ruta{src/preprocessing.py} & Descarga y lectura validada de C-MAPSS; eliminación de sensores constantes; normalización; etiquetas de RUL \\
+    \hline
+    \filatabla 2. Ventanas temporales & \ruta{src/preprocessing.py} & Ventanas deslizantes por motor; partición entrenamiento/validación por motor \\
+    \hline
+    \filatabla 3. Modelo LSTM & \ruta{src/model.py}, \ruta{src/train.py} & Arquitectura LSTM; optimizador Adam con reducción adaptativa de la tasa de aprendizaje; entrenamiento \\
+    \hline
+    \filatabla 4. Resultados y alertas & \ruta{src/evaluation.py}, \ruta{src/inference.py}, \ruta{dashboard/app.py} & Métricas RMSE, MAE y Score; gráficas; curva de RUL; alertas; tablero \\
+    \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Metodología aplicada}
+
+El desarrollo sigue el estándar CRISP-DM~\cite{wirth2000crisp}. Las seis fases se
+agrupan en cuatro etapas ejecutables que se reflejan en el uso del sistema
+(Tabla~\ref{tab:crisp}).
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Etapas del proyecto, fases CRISP-DM y comando asociado.}
+\label{tab:crisp}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.2cm}|>{\centering\arraybackslash}p{2.4cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Etapa} & \textbf{Fases CRISP-DM} & \textbf{Dónde se ejecuta} \\
+    \hline
+    \filatabla 1. Recopilación y preparación de datos & 1, 2 y 3 & \cmd{make data}; cuaderno \ruta{notebooks/01_EDA.ipynb} \\
+    \hline
+    \filatabla 2. Adaptación y entrenamiento del modelo & 4 & \cmd{make train}, \cmd{make grid} \\
+    \hline
+    \filatabla 3. Evaluación y validación & 5 & Evaluación automática al final de \cmd{make train}; \cmd{make evaluate} \\
+    \hline
+    \filatabla 4. Despliegue: tablero de visualización & 6 & \cmd{make dashboard} \\
+    \hline
+\end{tabularx}
+\end{table}
+
+% ============================================================
+\section{Requisitos}
+\label{sec:requisitos}
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Requisitos de hardware y software.}
+\label{tab:requisitos}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.8cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Componente} & \textbf{Requisito} \\
+    \hline
+    \filatabla Sistema operativo & Windows 10/11, macOS o Linux \\
+    \hline
+    \filatabla Python & Versión 3.10 a 3.12 (con \cmd{pip} y \cmd{venv}) \\
+    \hline
+    \filatabla Memoria RAM & 8~GB recomendados (el modelo es pequeño; el entrenamiento es viable sin GPU) \\
+    \hline
+    \filatabla Disco & Aproximadamente 3~GB para dependencias (TensorFlow) y datos \\
+    \hline
+    \filatabla Bibliotecas principales & TensorFlow $\geq$ 2.16 (Keras~3), NumPy, Pandas, Scikit-Learn, Matplotlib, Plotly y Streamlit $\geq$ 1.50; la lista completa está en \ruta{requirements.txt} \\
+    \hline
+    \filatabla Herramientas opcionales & \cmd{make} (en Windows puede sustituirse, ver Tabla~\ref{tab:equivalencias}); Git; \LaTeX{} (\cmd{latexmk}) para compilar este manual \\
+    \hline
+    \filatabla Conexión a Internet & Necesaria para instalar dependencias y descargar C-MAPSS \\
+    \hline
+\end{tabularx}
+\end{table}
+
+% ============================================================
+\section{Instalación paso a paso}
+\label{sec:instalacion}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    paso/.style={
+      rectangle, rounded corners=5pt,
+      minimum width=2.9cm, minimum height=1.7cm,
+      text width=2.9cm, align=center,
+      draw=gray!60, fill=#1,
+      font=\fontsize{8.5}{10.5}\selectfont,
+      drop shadow
+    },
+    fl/.style={-Stealth, thick, draw=gray!60}
+  ]
+  \node[paso=blue!9] (p1) {\textbf{Paso 1}\\[2pt]Instalar\\dependencias\\[2pt]{\fontsize{7}{9}\selectfont\ttfamily make setup}};
+  \node[paso=green!12, right=0.9cm of p1] (p2) {\textbf{Paso 2}\\[2pt]Obtener\\los datos C-MAPSS\\[2pt]{\fontsize{7}{9}\selectfont\ttfamily make data}};
+  \node[paso=orange!16, right=0.9cm of p2] (p3) {\textbf{Paso 3}\\[2pt]Entrenar y\\evaluar el modelo\\[2pt]{\fontsize{7}{9}\selectfont\ttfamily make train}};
+  \node[paso=yellow!22, right=0.9cm of p3] (p4) {\textbf{Paso 4}\\[2pt]Revisar\\las métricas\\[2pt]{\fontsize{7}{9}\selectfont\ttfamily metrics.json}};
+  \node[paso=purple!12, right=0.9cm of p4] (p5) {\textbf{Paso 5}\\[2pt]Abrir el\\tablero\\[2pt]{\fontsize{7}{9}\selectfont\ttfamily make dashboard}};
+  \draw[fl] (p1)--(p2);
+  \draw[fl] (p2)--(p3);
+  \draw[fl] (p3)--(p4);
+  \draw[fl] (p4)--(p5);
+\end{tikzpicture}%
+}
+\caption{Flujo de uso del prototipo, desde la instalación hasta el tablero.}
+\label{fig:flujo}
+\end{figure}
+
+\subsection{Paso 1. Obtener el código}
+
+\begin{lstlisting}
+git clone <URL_DEL_REPOSITORIO> rul-turbofan-tt
+cd rul-turbofan-tt
+\end{lstlisting}
+
+Todos los comandos de este manual se ejecutan desde la \textbf{raíz del
+repositorio} (la carpeta que contiene \ruta{Makefile} y \ruta{README.md}).
+
+\subsection{Paso 2. Crear y activar un entorno virtual}
+
+\textbf{Linux o macOS:}
+\begin{lstlisting}
+python -m venv .venv
+source .venv/bin/activate
+\end{lstlisting}
+
+\textbf{Windows (PowerShell):}
+\begin{lstlisting}
+python -m venv .venv
+.venv\Scripts\activate
+\end{lstlisting}
+
+El indicador del entorno (\cmd{(.venv)}) debe aparecer al inicio de la línea de
+comandos.
+
+\subsection{Paso 3. Instalar las dependencias}
+
+\begin{lstlisting}
+make setup
+\end{lstlisting}
+
+Este comando ejecuta \cmd{python -m pip install -r requirements-dev.txt}, que
+incluye las dependencias de ejecución, \textit{pytest}, \textit{ruff} y
+JupyterLab. La instalación de TensorFlow puede tardar varios minutos.
+
+\subsection{Paso 4. Verificar la instalación}
+
+\begin{lstlisting}
+make test
+\end{lstlisting}
+
+Deben ejecutarse 24 pruebas unitarias y de extremo a extremo (usan datos
+sintéticos, por lo que no requieren descargar C-MAPSS). La salida correcta
+termina con una línea similar a \cmd{24 passed}.
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Equivalencia entre comandos \cmd{make} y comandos directos (útil en Windows sin \cmd{make}).}
+\label{tab:equivalencias}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.2cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Con make} & \textbf{Comando directo} \\
+    \hline
+    \filatabla \cmd{make setup} & \cmd{python -m pip install -r requirements-dev.txt} \\
+    \hline
+    \filatabla \cmd{make data} & \cmd{python -m src.ingestion --download} \\
+    \hline
+    \filatabla \cmd{make test} & \cmd{python -m pytest -q} \\
+    \hline
+    \filatabla \cmd{make train SUBSET=FD001 WINDOW=30} & \cmd{python -m src.train --subset FD001 --window 30 --epochs 100} \\
+    \hline
+    \filatabla \cmd{make grid SUBSET=FD001} & \cmd{python -m src.grid_search --subset FD001 --epochs 100} \\
+    \hline
+    \filatabla \cmd{make evaluate SUBSET=FD001} & \cmd{python -m src.evaluation --subset FD001} \\
+    \hline
+    \filatabla \cmd{make dashboard} & \cmd{streamlit run dashboard/app.py} \\
+    \hline
+    \filatabla \cmd{make manual} & \cmd{cd docs/manual_usuario} y luego \cmd{latexmk -pdf manual_usuario.tex} \\
+    \hline
+\end{tabularx}
+\end{table}
+
+% ============================================================
+\section{Obtención y descripción de los datos}
+\label{sec:datos}
+
+\subsection{Descarga}
+
+\begin{lstlisting}
+make data
+\end{lstlisting}
+
+El comando descarga el archivo comprimido de C-MAPSS, lo extrae en
+\ruta{data/raw/} y verifica que existan los 12 archivos esperados. Si la
+descarga falla (la ubicación del recurso en los servidores de la NASA ha
+cambiado en el pasado), hay dos alternativas:
+
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+    \item Descargar manualmente el conjunto desde el repositorio oficial de datos
+          de pronóstico de la NASA~\cite{saxena2008damage} y copiar los archivos
+          \ruta{train_FD00X.txt}, \ruta{test_FD00X.txt} y \ruta{RUL_FD00X.txt}
+          (con X = 1, 2, 3, 4) en \ruta{data/raw/}.
+    \item Indicar la dirección vigente: \cmd{python -m src.ingestion --download --url <URL>}.
+\end{enumerate}
+
+Para comprobar la carga, ejecute \cmd{python -m src.ingestion}: imprime el
+número de motores y de filas de cada subconjunto.
+
+\subsection{Subconjuntos y archivos}
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Subconjuntos de C-MAPSS~\cite{saxena2008damage}.}
+\label{tab:subconjuntos}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|c|c|c|c|c|}
+    \hline
+    \encabezadotabla \textbf{Subconjunto} & \textbf{Regímenes de operación} & \textbf{Modos de falla} & \textbf{Motores de entrenamiento} & \textbf{Motores de prueba} \\
+    \hline
+    \filatabla FD001 & 1 & 1 & 100 & 100 \\
+    \hline
+    \filatabla FD002 & 6 & 1 & 260 & 259 \\
+    \hline
+    \filatabla FD003 & 1 & 2 & 100 & 100 \\
+    \hline
+    \filatabla FD004 & 6 & 2 & 249 & 248 \\
+    \hline
+\end{tabularx}
+\end{table}
+
+Cada subconjunto consta de tres archivos de texto:
+
+\begin{itemize}
+    \item \ruta{train_FD00X.txt}: trayectorias completas de cada motor, desde el
+          inicio de la operación hasta la falla.
+    \item \ruta{test_FD00X.txt}: trayectorias truncadas antes de la falla.
+    \item \ruta{RUL_FD00X.txt}: RUL real del último ciclo observado de cada
+          motor de prueba (una línea por motor).
+\end{itemize}
+
+Cada línea de \ruta{train_} y \ruta{test_} contiene 26 columnas separadas por
+espacios: identificador del motor (\cmd{unit}), ciclo (\cmd{cycle}), tres ajustes
+operacionales (\cmd{op1}--\cmd{op3}) y 21 canales de sensores (\cmd{s1}--\cmd{s21}).
+
+\begin{table}[H]
+\centering
+\fontsize{8.5}{10.5}\selectfont
+\caption{Canales de sensores de C-MAPSS~\cite{frederick2007cmapss,saxena2008damage}.}
+\label{tab:sensores}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|c|l|X|}
+    \hline
+    \encabezadotabla \textbf{Canal} & \textbf{Símbolo} & \textbf{Descripción} \\
+    \hline
+    \filatabla s1 & T2 & Temperatura total a la entrada del fan \\ \hline
+    \filatabla s2 & T24 & Temperatura total a la salida del compresor de baja (LPC) \\ \hline
+    \filatabla s3 & T30 & Temperatura total a la salida del compresor de alta (HPC) \\ \hline
+    \filatabla s4 & T50 & Temperatura total a la salida de la turbina de baja (LPT) \\ \hline
+    \filatabla s5 & P2 & Presión a la entrada del fan \\ \hline
+    \filatabla s6 & P15 & Presión total en el ducto de bypass \\ \hline
+    \filatabla s7 & P30 & Presión total a la salida del HPC \\ \hline
+    \filatabla s8 & Nf & Velocidad física del fan \\ \hline
+    \filatabla s9 & Nc & Velocidad física del núcleo (compresor) \\ \hline
+    \filatabla s10 & epr & Razón de presión del motor \\ \hline
+    \filatabla s11 & Ps30 & Presión estática a la salida del HPC \\ \hline
+    \filatabla s12 & phi & Razón entre el flujo de combustible y Ps30 \\ \hline
+    \filatabla s13 & NRf & Velocidad corregida del fan \\ \hline
+    \filatabla s14 & NRc & Velocidad corregida del núcleo \\ \hline
+    \filatabla s15 & BPR & Razón de bypass \\ \hline
+    \filatabla s16 & farB & Razón combustible/aire del quemador \\ \hline
+    \filatabla s17 & htBleed & Entalpía de sangrado \\ \hline
+    \filatabla s18 & Nf\_dmd & Velocidad del fan demandada \\ \hline
+    \filatabla s19 & PCNfR\_dmd & Velocidad corregida del fan demandada \\ \hline
+    \filatabla s20 & W31 & Sangrado de enfriamiento de la turbina de alta (HPT) \\ \hline
+    \filatabla s21 & W32 & Sangrado de enfriamiento de la turbina de baja (LPT) \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Tratamiento automático de los datos}
+
+Al entrenar, el sistema realiza de forma automática las siguientes operaciones
+(Módulos~1 y~2):
+
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+    \item \textbf{Partición por motor:} el 20\,\% de los motores de entrenamiento
+          se reserva para validación interna. La partición se hace por motor, no
+          por ventana, para evitar que ventanas casi idénticas de un mismo motor
+          queden en ambos conjuntos.
+    \item \textbf{Eliminación de señales constantes:} se descarta un sensor si su
+          desviación estándar dentro de cada régimen de operación es menor que
+          0.01 en todos los regímenes. La lista de sensores conservados y
+          descartados se guarda en \ruta{metrics.json}.
+    \item \textbf{Normalización por régimen de operación:} escalamiento mínimo--máximo
+          con estadísticas calculadas \emph{solo} con los motores de entrenamiento.
+          En FD002 y FD004 los seis regímenes se identifican con K-Means sobre
+          los ajustes operacionales.
+    \item \textbf{Etiqueta de RUL lineal por tramos:} $\text{RUL}(t)=t_{\text{final}}-t$,
+          limitada a un tope (por defecto 125 ciclos)~\cite{heimes2008rnn}.
+    \item \textbf{Ventanas deslizantes:} ventanas de longitud fija (por defecto 30
+          ciclos, paso 1); la etiqueta es la RUL del último ciclo de la ventana.
+          En prueba se usa la última ventana de cada motor; si la trayectoria es
+          más corta que la ventana, se rellena replicando la primera lectura.
+\end{enumerate}
+
+% ============================================================
+\section{Entrenamiento y evaluación del modelo}
+\label{sec:entrenamiento}
+
+\subsection{Entrenar un subconjunto}
+
+\begin{lstlisting}
+make train SUBSET=FD001 WINDOW=30
+\end{lstlisting}
+
+Para entrenar los cuatro subconjuntos con las ventanas predeterminadas
+(30, 20, 30 y 20 ciclos para FD001 a FD004, respectivamente):
+
+\begin{lstlisting}
+make train-all
+\end{lstlisting}
+
+El proceso ejecuta, en orden: carga y limpieza, construcción de ventanas,
+entrenamiento con parada temprana, evaluación en el conjunto de prueba, y
+guardado de modelo, métricas y gráficas.
+
+\subsection{Arquitectura e hiperparámetros por defecto}
+
+El modelo es una red LSTM apilada seguida de capas densas y una salida lineal que
+entrega la RUL en ciclos~\cite{zheng2017lstm,hochreiter1997lstm}. El
+entrenamiento usa el optimizador Adam~\cite{kingma2015adam} con tasa de
+aprendizaje inicial $10^{-3}$, reducción adaptativa de la tasa al detectarse
+estancamiento de la pérdida de validación (\textit{ReduceLROnPlateau}) y parada
+temprana. Para prevenir el sobreajuste se emplea abandono
+(\textit{dropout})~\cite{srivastava2014dropout}.
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Parámetros de \cmd{python -m src.train}.}
+\label{tab:parametros}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.7cm}|>{\raggedright\arraybackslash}p{2.6cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Parámetro} & \textbf{Valor por defecto} & \textbf{Descripción} \\
+    \hline
+    \filatabla \cmd{--subset} & FD001 & Subconjunto: FD001, FD002, FD003 o FD004 \\ \hline
+    \filatabla \cmd{--window} & 30 & Longitud de la ventana temporal (ciclos) \\ \hline
+    \filatabla \cmd{--rul-cap} & 125 & Tope de la RUL lineal por tramos \\ \hline
+    \filatabla \cmd{--val-fraction} & 0.2 & Fracción de motores para validación interna \\ \hline
+    \filatabla \cmd{--lstm-units} & 64 32 & Celdas de cada capa LSTM (una cifra por capa) \\ \hline
+    \filatabla \cmd{--dense-units} & 32 16 & Neuronas de cada capa densa \\ \hline
+    \filatabla \cmd{--dropout} & 0.2 & Tasa de abandono \\ \hline
+    \filatabla \cmd{--learning-rate} & 0.001 & Tasa de aprendizaje inicial de Adam \\ \hline
+    \filatabla \cmd{--epochs} & 100 & Máximo de épocas (la parada temprana puede detener antes) \\ \hline
+    \filatabla \cmd{--batch-size} & 256 & Tamaño de lote \\ \hline
+    \filatabla \cmd{--seed} & 42 & Semilla de reproducibilidad \\ \hline
+    \filatabla \cmd{--raw-dir} & \ruta{data/raw} & Carpeta con los archivos de C-MAPSS \\ \hline
+    \filatabla \cmd{--out-dir} & \ruta{models} & Carpeta de salida de los artefactos \\ \hline
+    \filatabla \cmd{--verbose} & 1 & 0 = silencioso; 1 = muestra el progreso por época \\ \hline
+\end{tabularx}
+\end{table}
+
+\noindent Ejemplo con hiperparámetros personalizados:
+
+\begin{lstlisting}
+python -m src.train --subset FD002 --window 20 --lstm-units 128 64 --dropout 0.3 --epochs 150
+\end{lstlisting}
+
+\textbf{Nota.} Los valores por defecto son un punto de partida, no los valores
+finales; deben refinarse con la búsqueda en cuadrícula y contrastarse con lo
+reportado en la literatura~\cite{zheng2017lstm}. La ubicación de datos y modelos
+también puede cambiarse con las variables de entorno \cmd{RUL_DATA_DIR} y
+\cmd{RUL_MODELS_DIR}.
+
+\subsection{Búsqueda en cuadrícula de hiperparámetros}
+
+\begin{lstlisting}
+make grid SUBSET=FD001
+\end{lstlisting}
+
+Explora combinaciones de tamaño de ventana, celdas por capa LSTM y tasa de
+abandono. \textbf{La selección se basa únicamente en la pérdida de la validación
+interna}: el conjunto de prueba no interviene, para no sobreajustar la selección
+a la evaluación final. Por defecto se evalúan 4 ventanas $\times$ 4
+configuraciones LSTM $\times$ 3 tasas de abandono = 48 entrenamientos, lo que
+puede tardar horas; para una exploración más breve:
+
+\begin{lstlisting}
+python -m src.grid_search --subset FD001 --windows 20 30 --lstm-options 32,32 64,32 --dropouts 0.1 0.2 --epochs 40
+\end{lstlisting}
+
+El resultado se guarda en \ruta{models/grid_search/grid_FD001.csv}, ordenado de
+menor a mayor \cmd{val_rmse}; la primera fila es la mejor configuración. Con ella
+se vuelve a ejecutar \cmd{src.train} para el entrenamiento final.
+
+\subsection{Artefactos generados}
+
+Cada entrenamiento crea la carpeta \ruta{models/<SUBCONJUNTO>/}:
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Archivos generados por el entrenamiento.}
+\label{tab:artefactos}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.6cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Archivo} & \textbf{Contenido} \\
+    \hline
+    \filatabla \ruta{model.keras} & Modelo LSTM entrenado (devuelve RUL en ciclos) \\ \hline
+    \filatabla \ruta{preprocessor.joblib} & Sensores seleccionados, regímenes y parámetros de normalización \\ \hline
+    \filatabla \ruta{config.json} & Hiperparámetros del experimento \\ \hline
+    \filatabla \ruta{metrics.json} & Métricas de validación y de prueba; sensores usados y descartados \\ \hline
+    \filatabla \ruta{history.csv} & Pérdida y métricas por época \\ \hline
+    \filatabla \ruta{test_predictions.csv} & RUL real y estimada de cada motor de prueba \\ \hline
+    \filatabla \ruta{figures/pred_vs_real.png} & RUL real vs. estimada (motores ordenados por RUL real) y dispersión \\ \hline
+    \filatabla \ruta{figures/error_dist.png} & Histograma del error de estimación \\ \hline
+    \filatabla \ruta{figures/training_history.png} & Curvas de pérdida y de la tasa de aprendizaje \\ \hline
+\end{tabularx}
+\end{table}
+
+Para reevaluar un modelo ya entrenado sobre el conjunto de prueba:
+
+\begin{lstlisting}
+make evaluate SUBSET=FD001
+\end{lstlisting}
+
+\subsection{Interpretación de las métricas}
+
+Sea $d_i=\widehat{\text{RUL}}_i-\text{RUL}_i$ el error del motor $i$ (RUL estimada
+menos RUL real) y $N$ el número de motores de prueba. Se calculan las
+siguientes métricas~\cite{saxena2008damage}:
+
+\begin{align}
+\text{RMSE} &= \sqrt{\frac{1}{N}\sum_{i=1}^{N} d_i^{2}}, &
+\text{MAE} &= \frac{1}{N}\sum_{i=1}^{N} |d_i|, \\[4pt]
+\text{Score} &= \sum_{i=1}^{N} s_i, &
+s_i &=
+\begin{cases}
+e^{-d_i/13}-1, & d_i<0 \quad \text{(estimación temprana)}\\[2pt]
+e^{\,d_i/10}-1, & d_i\geq 0 \quad \text{(estimación tardía)}
+\end{cases}
+\end{align}
+
+\begin{itemize}
+    \item \textbf{RMSE} y \textbf{MAE} se expresan en ciclos; menor es mejor. El
+          RMSE pondera más los errores grandes.
+    \item \textbf{Score} es una función de puntuación asimétrica; menor es
+          mejor. Penaliza más las estimaciones \textbf{tardías}
+          ($d_i>0$, la RUL se \emph{sobreestima}), porque implican operar el
+          motor más allá de su vida segura, que las tempranas ($d_i<0$).
+    \item \cmd{pct_estimacion_tardia} indica el porcentaje de motores con
+          $d_i>0$; un valor muy superior a 50\,\% señala un modelo sesgado
+          hacia el optimismo.
+\end{itemize}
+
+En \ruta{metrics.json} se reportan tres bloques: \cmd{validation_windows}
+(todas las ventanas de los motores de validación), \cmd{test} (última ventana de
+cada motor de prueba contra la RUL real \emph{sin tope}) y
+\cmd{test_capped_labels} (igual, pero con la RUL real limitada al tope). Al
+comparar con otros trabajos, indique cuál convención utiliza, porque la
+literatura no es uniforme.
+
+% ============================================================
+\section{Uso del tablero de visualización}
+\label{sec:tablero}
+
+\subsection{Iniciar el tablero}
+
+Requisito: haber entrenado al menos un subconjunto (Sección~\ref{sec:entrenamiento})
+y contar con los datos en \ruta{data/raw/}.
+
+\begin{lstlisting}
+make dashboard
+\end{lstlisting}
+
+El navegador se abre en \cmd{http://localhost:8501}. Si no se abre
+automáticamente, copie esa dirección en el navegador. Para usar otro puerto:
+\cmd{streamlit run dashboard/app.py --server.port 8502}. Para detener el tablero,
+presione \cmd{Ctrl+C} en la terminal.
+
+Si no hay modelos entrenados, el tablero lo indica con un mensaje y el comando
+que debe ejecutarse (\cmd{make train SUBSET=FD001}).
+
+\subsection{Distribución de la pantalla}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm,
+    marco/.style={draw=gray!60, rounded corners=3pt},
+    num/.style={circle, draw=red!60!black, fill=red!10, inner sep=1.2pt,
+                font=\fontsize{8}{9}\selectfont\bfseries, text=red!50!black}
+  ]
+  % Marco general
+  \draw[marco, fill=white] (0,0) rectangle (15,10);
+  % Barra lateral
+  \draw[marco, fill=gray!14] (0,0) rectangle (3.4,10);
+  \node[font=\fontsize{8}{9}\selectfont\bfseries, anchor=north west] at (0.2,9.8) {Configuración};
+  \node[font=\fontsize{7}{8}\selectfont, anchor=north west, align=left] at (0.2,9.2)
+        {Subconjunto C-MAPSS\\[2pt]\fbox{\strut FD001\hspace{0.6cm}\ding{116}}};
+  \node[font=\fontsize{7}{8}\selectfont, anchor=north west, align=left] at (0.2,7.9)
+        {Umbrales de alerta\\(ciclos)};
+  \draw[gray!70, thick] (0.3,6.6) -- (3.1,6.6); \fill[red!60] (1.0,6.6) circle (0.09);
+  \node[font=\fontsize{6.5}{7}\selectfont, anchor=west] at (0.3,6.9) {Crítico};
+  \draw[gray!70, thick] (0.3,5.7) -- (3.1,5.7); \fill[orange!80] (1.9,5.7) circle (0.09);
+  \node[font=\fontsize{6.5}{7}\selectfont, anchor=west] at (0.3,6.0) {Precaución};
+  % Pestañas
+  \foreach \x/\t in {3.7/Motor individual, 6.3/Flota (prueba), 8.9/Modelo}{
+    \draw[marco, fill=colorPropuesta] (\x,9.1) rectangle (\x+2.4,9.8);
+    \node[font=\fontsize{7.5}{8}\selectfont] at (\x+1.2,9.45) {\t};
+  }
+  % Banner de alerta
+  \draw[marco, fill=semCritico] (3.7,8.0) rectangle (14.8,8.8);
+  \node[font=\fontsize{7.5}{8}\selectfont] at (9.25,8.4) {ALERTA DE FALLA — CRÍTICO: RUL estimada = 24 ciclos};
+  % Indicador tipo velocímetro (semicírculo: 0 ciclos a la izquierda, 125 a la derecha)
+  \draw[marco] (3.7,5.0) rectangle (7.7,7.8);
+  \node[font=\fontsize{6.5}{7}\selectfont] at (5.7,7.55) {RUL estimada (último ciclo)};
+  \def\cx{5.7}\def\cy{5.55}\def\rr{1.4}
+  \draw[line width=7pt, semNormal]     ($(\cx,\cy)+(93.6:\rr)$)  arc[start angle=93.6,  end angle=0,    radius=\rr];
+  \draw[line width=7pt, semPrecaucion] ($(\cx,\cy)+(136.8:\rr)$) arc[start angle=136.8, end angle=93.6, radius=\rr];
+  \draw[line width=7pt, semCritico]    ($(\cx,\cy)+(180:\rr)$)   arc[start angle=180,   end angle=136.8, radius=\rr];
+  \draw[thick, red!60!black, -{Stealth[length=2mm]}] (\cx,\cy) -- ++(145.4:1.15);
+  \fill[red!60!black] (\cx,\cy) circle (0.07);
+  \node[font=\fontsize{9}{10}\selectfont\bfseries] at (5.7,5.2) {24 ciclos};
+  % Métricas
+  \foreach \x/\t/\v in {7.9/Ciclos observados/160, 10.4/RUL estimada/24 ciclos, 12.9/RUL real (ref.)/30 ciclos}{
+    \draw[marco] (\x,5.0) rectangle (\x+1.9,7.8);
+    \node[font=\fontsize{6.5}{7}\selectfont] at (\x+0.95,7.2) {\t};
+    \node[font=\fontsize{8}{9}\selectfont\bfseries] at (\x+0.95,6.2) {\v};
+  }
+  % Curva de RUL
+  \draw[marco] (3.7,2.4) rectangle (14.8,4.8);
+  \fill[semCritico, opacity=0.6] (3.9,2.55) rectangle (14.6,2.95);
+  \fill[semPrecaucion, opacity=0.6] (3.9,2.95) rectangle (14.6,3.5);
+  \draw[blue!70, dashed, thick] (3.9,4.1) -- (8.0,4.1) -- (14.6,2.7);
+  \draw[red!70, thick] (3.9,4.1) -- (7.8,4.05) -- (9.5,3.75) -- (11.0,3.4) -- (12.8,3.0) -- (14.6,2.75);
+  \node[font=\fontsize{6.5}{7}\selectfont, anchor=north west] at (3.9,4.75) {Curva de RUL: estimada (rojo) vs. real (azul discontinuo)};
+  % Sensores
+  \draw[marco] (3.7,0.2) rectangle (14.8,2.2);
+  \draw[gray!70, thick] (3.9,1.8) -- (6.0,1.5) -- (8.0,1.3) -- (10.0,0.9) -- (12.0,0.7) -- (14.6,0.4);
+  \node[font=\fontsize{6.5}{7}\selectfont, anchor=north west] at (3.9,2.15) {Evolución temporal de sensores};
+  % Numeración
+  \node[num] at (3.4,9.7) {1};
+  \node[num] at (6.2,9.6) {2};
+  \node[num] at (14.6,8.4) {3};
+  \node[num] at (7.5,7.6) {4};
+  \node[num] at (14.6,7.6) {5};
+  \node[num] at (14.6,4.6) {6};
+  \node[num] at (14.6,2.0) {7};
+\end{tikzpicture}
+\caption{Esquema de la pestaña «Motor individual». Los números se explican en
+la Tabla~\ref{tab:elementos}. La figura es ilustrativa; los valores mostrados son
+de ejemplo.}
+\label{fig:tablero}
+\end{figure}
+
+\IfFileExists{figuras/tablero_motor.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/tablero_motor.png}
+\caption{Captura de pantalla de la pestaña «Motor individual».}
+\end{figure}}{}
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Elementos de la pestaña «Motor individual» (Figura~\ref{fig:tablero}).}
+\label{tab:elementos}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{3.6cm}|X|}
+    \hline
+    \encabezadotabla \textbf{N.º} & \textbf{Elemento} & \textbf{Función} \\
+    \hline
+    \filatabla 1 & Barra lateral & Selecciona el subconjunto C-MAPSS (solo aparecen los entrenados) y ajusta los umbrales de alerta \\ \hline
+    \filatabla 2 & Pestañas & «Motor individual», «Flota (prueba)» y «Modelo» \\ \hline
+    \filatabla 3 & Banner de alerta & Estado del motor: NORMAL (verde), PRECAUCIÓN (amarillo) o CRÍTICO (rojo) \\ \hline
+    \filatabla 4 & Indicador tipo velocímetro & RUL estimada en el último ciclo observado, con las zonas de color de los umbrales \\ \hline
+    \filatabla 5 & Indicadores numéricos & Ciclos observados, RUL estimada y RUL real de referencia con su error (estimada $-$ real) \\ \hline
+    \filatabla 6 & Curva de RUL & RUL estimada y RUL real en cada ciclo; bandas de color de los umbrales; zona gris de ventana incompleta \\ \hline
+    \filatabla 7 & Sensores & Evolución temporal de los sensores elegidos, en valores originales o normalizados \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Procedimiento de uso}
+
+\begin{enumerate}[leftmargin=*, label=\arabic*.]
+    \item \textbf{Elegir el subconjunto.} En la barra lateral, seleccione FD001,
+          FD002, FD003 o FD004. Solo se listan los subconjuntos con un modelo
+          entrenado en \ruta{models/}.
+    \item \textbf{Ajustar los umbrales (opcional).} Con los deslizadores defina
+          los ciclos restantes a partir de los cuales el estado pasa a
+          PRECAUCIÓN y a CRÍTICO (Sección~\ref{sec:alertas}).
+    \item \textbf{Seleccionar un motor} en la pestaña «Motor individual». El
+          tablero calcula la RUL estimada en cada ciclo y muestra el estado
+          actual.
+    \item \textbf{Leer la alerta y el indicador} (elementos 3 y 4 de la
+          Figura~\ref{fig:tablero}).
+    \item \textbf{Analizar la curva de RUL.} Compare la estimación con la RUL
+          real y observe la tendencia.
+    \item \textbf{Explorar los sensores.} Elija uno o varios sensores en la lista
+          (se muestra el símbolo y la descripción). Active «Mostrar valores
+          normalizados» para compararlos en una escala común por régimen.
+    \item \textbf{Revisar la flota.} En «Flota (prueba)» se listan todos los
+          motores ordenados por RUL estimada ascendente, de modo que los de
+          intervención más urgente aparecen primero; el gráfico de barras y la
+          tabla se actualizan con los umbrales elegidos.
+    \item \textbf{Consultar el modelo.} En «Modelo» se muestran RMSE, MAE y Score
+          de prueba, los sensores utilizados y descartados, los hiperparámetros
+          y la gráfica de RUL real vs. estimada.
+\end{enumerate}
+
+\IfFileExists{figuras/tablero_flota.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/tablero_flota.png}
+\caption{Captura de pantalla de la pestaña «Flota (prueba)».}
+\end{figure}}{}
+
+\subsection{Sistema de alertas}
+\label{sec:alertas}
+
+El estado se determina comparando la RUL estimada del último ciclo con dos
+umbrales configurables (Figura~\ref{fig:semaforo} y Tabla~\ref{tab:alertas}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=0.115cm, y=1cm]
+  \fill[semCritico]    (0,0)   rectangle (30,0.8);
+  \fill[semPrecaucion] (30,0)  rectangle (60,0.8);
+  \fill[semNormal]     (60,0)  rectangle (125,0.8);
+  \draw[gray!70] (0,0) rectangle (125,0.8);
+  \draw[thick] (30,-0.15) -- (30,0.95);
+  \draw[thick] (60,-0.15) -- (60,0.95);
+  \node[font=\fontsize{8}{9}\selectfont\bfseries] at (15,0.4) {CRÍTICO};
+  \node[font=\fontsize{8}{9}\selectfont\bfseries] at (45,0.4) {PRECAUCIÓN};
+  \node[font=\fontsize{8}{9}\selectfont\bfseries] at (92.5,0.4) {NORMAL};
+  \foreach \v/\l in {0/0, 30/30, 60/60, 125/125}{
+    \draw (\v,0) -- (\v,-0.15); \node[font=\fontsize{7}{8}\selectfont, below] at (\v,-0.15) {\l};
+  }
+  \node[font=\fontsize{7}{8}\selectfont, above, align=center] at (30,0.95) {umbral crítico\\(por defecto 30)};
+  \node[font=\fontsize{7}{8}\selectfont, above, align=center] at (60,0.95) {umbral de precaución\\(por defecto 60)};
+  \node[font=\fontsize{7}{8}\selectfont, below] at (62.5,-0.75) {RUL estimada (ciclos restantes); el máximo mostrado es el tope de RUL (125)};
+\end{tikzpicture}
+\caption{Zonas de alerta según la RUL estimada, con los umbrales por defecto.}
+\label{fig:semaforo}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Estados de alerta del tablero.}
+\label{tab:alertas}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}p{4.4cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Estado} & \textbf{Condición} & \textbf{Acción sugerida} \\
+    \hline
+    \cellcolor{semNormal} NORMAL & RUL estimada $>$ umbral de precaución & Operación normal; seguimiento rutinario \\ \hline
+    \cellcolor{semPrecaucion} PRECAUCIÓN & Umbral crítico $<$ RUL estimada $\leq$ umbral de precaución & Planificar el mantenimiento y reservar recursos \\ \hline
+    \cellcolor{semCritico} CRÍTICO & RUL estimada $\leq$ umbral crítico & Programar la intervención en la próxima escala planificada \\ \hline
+\end{tabularx}
+\end{table}
+
+\textbf{Los umbrales por defecto (60 y 30 ciclos) no provienen de la
+literatura:} son parámetros de política de mantenimiento que debe definir el
+departamento usuario según sus costos, tiempos de reposición y escalas
+disponibles.
+
+\subsection{Cómo interpretar la curva de RUL}
+
+\begin{itemize}
+    \item Al inicio de la vida del motor, tanto la RUL real como la estimada se
+          muestran limitadas al tope (125 ciclos): se asume que mientras el motor
+          está sano la degradación es despreciable~\cite{heimes2008rnn}.
+    \item La zona gris «ventana incompleta» corresponde a los primeros ciclos,
+          en los que la ventana de entrada se completa replicando la primera
+          lectura; las estimaciones ahí son \textbf{menos confiables}.
+    \item Es más informativa la \textbf{tendencia descendente sostenida} que un
+          valor puntual: una estimación aislada puede oscilar por ruido.
+    \item La RUL real de referencia solo existe para los motores del conjunto de
+          prueba de C-MAPSS; con datos reales de operación no estaría disponible.
+    \item Un error positivo (estimada $>$ real) es una estimación \textbf{tardía}
+          y es el caso de mayor riesgo operativo.
+\end{itemize}
+
+\subsection{Actualizar el tablero después de reentrenar}
+
+El tablero guarda en memoria el modelo de cada subconjunto. Después de volver a
+entrenar, deténgalo (\cmd{Ctrl+C}) y vuelva a iniciarlo, o use el menú
+\textit{Clear cache} de Streamlit y recargue la página.
+
+% ============================================================
+\section{Estructura del repositorio}
+\label{sec:estructura}
+
+\begin{lstlisting}
+rul-turbofan-tt/
+|-- data/
+|   |-- raw/                  # C-MAPSS original (no versionado)
+|   `-- processed/            # artefactos intermedios (no versionado)
+|-- docs/
+|   `-- manual_usuario/       # este manual (.tex, .pdf, figuras/)
+|-- notebooks/
+|   |-- 01_EDA.ipynb          # analisis exploratorio
+|   `-- 02_experimentacion.ipynb
+|-- src/                      # modulos del prototipo
+|   |-- config.py  ingestion.py  preprocessing.py
+|   |-- model.py  train.py  grid_search.py
+|   `-- evaluation.py  inference.py
+|-- models/<FD00X>/           # modelo, preprocesador, metricas y figuras
+|-- dashboard/app.py          # tablero Streamlit
+|-- tests/                    # pruebas con pytest (24)
+|-- Makefile  README.md  requirements*.txt  pytest.ini  ruff.toml
+`-- .gitignore
+\end{lstlisting}
+
+\subsection{Compilar este manual}
+
+\begin{lstlisting}
+make manual
+\end{lstlisting}
+
+Requiere una distribución \LaTeX{} con \cmd{latexmk} y los paquetes
+\textit{tikz}, \textit{babel}, \textit{diagbox}, \textit{listings} y
+\textit{makecell} (incluidos en TeX Live y MiKTeX completos). El resultado es
+\ruta{docs/manual_usuario/manual_usuario.pdf}. Para incluir capturas reales,
+guárdelas como \ruta{figuras/tablero_motor.png} y \ruta{figuras/tablero_flota.png}
+dentro de la carpeta del manual; se insertarán automáticamente al compilar.
+
+% ============================================================
+\section{Solución de problemas}
+\label{sec:problemas}
+
+\begin{table}[H]
+\centering
+\fontsize{8.5}{10.5}\selectfont
+\caption{Problemas frecuentes y su solución.}
+\label{tab:problemas}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.4cm}|>{\raggedright\arraybackslash}p{4.4cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Síntoma} & \textbf{Causa probable} & \textbf{Solución} \\
+    \hline
+    \filatabla \cmd{FileNotFoundError: Faltan [...] en data/raw} & Los datos no se han descargado o están en otra carpeta & Ejecute \cmd{make data} o copie los archivos manualmente (Sección~\ref{sec:datos}); verifique \cmd{RUL_DATA_DIR} \\ \hline
+    \filatabla La descarga con \cmd{make data} falla & La URL de la NASA cambió o no hay conexión & Descargue el conjunto manualmente o use \cmd{--url} con la dirección vigente \\ \hline
+    \filatabla \cmd{make: command not found} (Windows) & \cmd{make} no está instalado & Use los comandos directos de la Tabla~\ref{tab:equivalencias} \\ \hline
+    \filatabla \cmd{ModuleNotFoundError: No module named 'src'} & El comando se ejecutó fuera de la raíz del repositorio & Ubíquese en la carpeta que contiene \ruta{Makefile} y use \cmd{python -m src.train} \\ \hline
+    \filatabla Error al importar TensorFlow o Keras & Versión de Python no compatible o instalación incompleta & Use Python 3.10--3.12 en un entorno virtual limpio y reinstale con \cmd{make setup} \\ \hline
+    \filatabla El tablero muestra «No se encontraron modelos entrenados» & No se ha entrenado ningún subconjunto & Ejecute \cmd{make train SUBSET=FD001} y recargue la página \\ \hline
+    \filatabla El puerto 8501 está ocupado & Hay otra instancia de Streamlit en ejecución & Use \cmd{--server.port 8502} o cierre la instancia anterior \\ \hline
+    \filatabla El tablero no refleja un modelo recién entrenado & Caché en memoria del tablero & Reinicie el tablero o use \textit{Clear cache} \\ \hline
+    \filatabla Memoria insuficiente al entrenar & Lote o modelo demasiado grandes para el equipo & Reduzca \cmd{--batch-size} (p.~ej., 64) o las celdas de \cmd{--lstm-units} \\ \hline
+    \filatabla RMSE muy alto o la pérdida no disminuye & Hiperparámetros poco adecuados o pocas épocas & Revise \ruta{figures/training_history.png}; ejecute \cmd{make grid}; aumente \cmd{--epochs} \\ \hline
+    \filatabla La búsqueda en cuadrícula tarda demasiado & Se evalúan 48 combinaciones por defecto & Reduzca las listas de \cmd{--windows}, \cmd{--lstm-options} y \cmd{--dropouts}, y las épocas \\ \hline
+    \filatabla Resultados distintos entre ejecuciones & Semilla distinta o diferencias de hardware & Fije \cmd{--seed}; pequeñas diferencias numéricas entre equipos son esperables \\ \hline
+\end{tabularx}
+\end{table}
+
+% ============================================================
+\section{Limitaciones y uso responsable}
+\label{sec:limitaciones}
+
+\begin{itemize}
+    \item \textbf{Datos simulados.} Los resultados corresponden a C-MAPSS y no
+          garantizan el desempeño sobre flotas reales ni sobre un modelo de
+          aeronave específico.
+    \item \textbf{Prototipo académico.} El sistema es una herramienta de apoyo a
+          la decisión y de demostración; no está certificado ni sustituye las
+          inspecciones y los programas de mantenimiento aprobados.
+    \item \textbf{Umbrales de alerta no calibrados} con costos operativos reales
+          (Sección~\ref{sec:alertas}).
+    \item \textbf{Incertidumbre.} La estimación es puntual; el sistema no reporta
+          intervalos de confianza.
+    \item \textbf{Fidelidad de las comparaciones.} Los resultados deben
+          compararse con otros trabajos solo si comparten el protocolo de
+          evaluación (tope de RUL, tamaño de ventana, uso del conjunto de prueba).
+\end{itemize}
+
+% ============================================================
+\section{Glosario}
+
+\begin{table}[H]
+\centering
+\fontsize{9}{11}\selectfont
+\caption{Términos utilizados en este manual.}
+\label{tab:glosario}
+\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.8cm}|X|}
+    \hline
+    \encabezadotabla \textbf{Término} & \textbf{Definición} \\
+    \hline
+    \filatabla C-MAPSS & \textit{Commercial Modular Aero-Propulsion System Simulation}: simulador y conjuntos de datos de degradación de motores turbofan de la NASA \\ \hline
+    \filatabla Ciclo & Una unidad de operación del motor (por ejemplo, un vuelo) en el que se registran las lecturas de los sensores \\ \hline
+    \filatabla RUL & \textit{Remaining Useful Life}: ciclos de operación que restan antes de la falla \\ \hline
+    \filatabla Tope de RUL & Valor máximo de la RUL usada como etiqueta (RUL lineal por tramos); por defecto 125 ciclos \\ \hline
+    \filatabla Régimen de operación & Combinación de condiciones de vuelo (ajustes operacionales); FD002 y FD004 tienen seis \\ \hline
+    \filatabla Ventana temporal & Secuencia de los últimos $W$ ciclos de lecturas que recibe la red para estimar la RUL \\ \hline
+    \filatabla LSTM & \textit{Long Short-Term Memory}: red neuronal recurrente capaz de aprender dependencias de largo plazo~\cite{hochreiter1997lstm} \\ \hline
+    \filatabla Dropout (abandono) & Técnica de regularización que desactiva neuronas al azar durante el entrenamiento para reducir el sobreajuste~\cite{srivastava2014dropout} \\ \hline
+    \filatabla Validación interna & 20\,\% de los motores de entrenamiento reservados para seleccionar hiperparámetros y detener el entrenamiento \\ \hline
+    \filatabla Estimación tardía / temprana & Error positivo ($\widehat{\text{RUL}}>\text{RUL}$) o negativo, respectivamente \\ \hline
+    \filatabla RMSE, MAE, Score & Métricas de desempeño definidas en la Sección~\ref{sec:entrenamiento} \\ \hline
+    \filatabla CRISP-DM & Proceso estándar de la industria para proyectos de minería de datos~\cite{wirth2000crisp} \\ \hline
+\end{tabularx}
+\end{table}
+
+% ============================================================
+\begin{thebibliography}{9}
+
+\bibitem{frederick2007cmapss}
+Frederick, D., de Castro, J. y Litt, J. (2007).
+\textit{User's Guide for the Commercial Modular Aero-Propulsion System
+Simulation (C-MAPSS)}.
+NASA Technical Memorandum NASA/TM--2007-215026. Glenn Research Center,
+Cleveland, OH: NASA.
+
+\bibitem{heimes2008rnn}
+Heimes, F.~O. (2008).
+Recurrent neural networks for remaining useful life estimation.
+En \textit{2008 International Conference on Prognostics and Health
+Management (PHM08)} (pp.~1--6). Denver, CO: IEEE.
+
+\bibitem{hochreiter1997lstm}
+Hochreiter, S. y Schmidhuber, J. (1997).
+Long short-term memory.
+\textit{Neural Computation}, 9(8), 1735--1780.
+\url{https://doi.org/10.1162/neco.1997.9.8.1735}
+
+\bibitem{kingma2015adam}
+Kingma, D.~P. y Ba, J. (2015).
+Adam: A method for stochastic optimization.
+En \textit{3rd International Conference on Learning Representations
+(ICLR 2015)}. San Diego, CA.
+\url{https://arxiv.org/abs/1412.6980}
+
+\bibitem{saxena2008damage}
+Saxena, A., Goebel, K., Simon, D. y Eklund, N. (2008).
+Damage propagation modeling for aircraft engine run-to-failure simulation.
+En \textit{Proceedings of the 1st International Conference on Prognostics
+and Health Management (PHM08)}. Denver, CO: IEEE.
+\url{https://doi.org/10.1109/PHM.2008.4711414}
+
+\bibitem{srivastava2014dropout}
+Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I. y
+Salakhutdinov, R. (2014).
+Dropout: A simple way to prevent neural networks from overfitting.
+\textit{Journal of Machine Learning Research}, 15(56), 1929--1958.
+
+\bibitem{wirth2000crisp}
+Wirth, R. y Hipp, J. (2000).
+CRISP-DM: Towards a standard process model for data mining.
+En \textit{Proceedings of the 4th International Conference on the
+Practical Applications of Knowledge Discovery and Data Mining},
+Manchester, 29--39.
+
+\bibitem{zheng2017lstm}
+Zheng, S., Ristovski, K., Farahat, A. y Gupta, C. (2017).
+Long short-term memory network for remaining useful life estimation.
+En \textit{2017 IEEE International Conference on Prognostics and Health
+Management (ICPHM)} (pp.~88--95). Dallas, TX: IEEE.
+
+\end{thebibliography}
+
+\end{document}
